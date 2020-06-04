@@ -33,7 +33,7 @@ class Iterator
      *
      * @return $this
      */
-    public function where($field, $value)
+    public function where($field, $value): self
     {
         $this->generator = new \CallbackFilterIterator($this->generator, function ($row) use ($field, $value) {
             // skip row. does not have field at all
@@ -60,7 +60,7 @@ class Iterator
      *
      * @return $this
      */
-    public function like($field, $value)
+    public function like($field, $value): self
     {
         $this->generator = new \CallbackFilterIterator($this->generator, function ($row) use ($field, $value) {
             // skip row. does not have field at all
@@ -107,7 +107,7 @@ class Iterator
      *
      * @return $this
      */
-    public function order($fields)
+    public function order($fields): self
     {
         $data = $this->get();
 
@@ -137,7 +137,7 @@ class Iterator
      *
      * @return $this
      */
-    public function limit($cnt, $shift = 0)
+    public function limit($cnt, $shift = 0): self
     {
         $data = array_slice($this->get(), $shift, $cnt, true);
 
@@ -152,7 +152,7 @@ class Iterator
      *
      * @return $this
      */
-    public function count()
+    public function count(): self
     {
         $this->generator = new \ArrayIterator([[iterator_count($this->generator)]]);
 
@@ -161,20 +161,16 @@ class Iterator
 
     /**
      * Return all data inside array.
-     *
-     * @return array
      */
-    public function get()
+    public function get(): array
     {
         return iterator_to_array($this->generator, true);
     }
 
     /**
      * Return one row of data.
-     *
-     * @return array
      */
-    public function getRow()
+    public function getRow(): array
     {
         $row = $this->generator->current();
         $this->generator->next();

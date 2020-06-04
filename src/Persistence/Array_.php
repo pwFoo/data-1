@@ -25,12 +25,18 @@ class Array_ extends Persistence
     }
 
     /**
+<<<<<<< develop
      * @deprecated TODO temporary for these:
      *             - https://github.com/atk4/data/blob/90ab68ac063b8fc2c72dcd66115f1bd3f70a3a92/src/Reference/ContainsOne.php#L119
      *             - https://github.com/atk4/data/blob/90ab68ac063b8fc2c72dcd66115f1bd3f70a3a92/src/Reference/ContainsMany.php#L66
      *             remove once fixed/no longer needed
      */
     public function getRawDataByTable(string $table): array
+=======
+     * Constructor. Can pass array of data in parameters.
+     */
+    public function __construct(array &$data)
+>>>>>>> Move types to code if possible
     {
         return $this->data[$table];
     }
@@ -78,10 +84,18 @@ class Array_ extends Persistence
     /**
      * Loads model and returns data record.
      *
+<<<<<<< develop
      * @param mixed  $id
      * @param string $table
      */
     public function load(Model $m, $id, $table = null): array
+=======
+     * @param mixed $id
+     *
+     * @return array|false
+     */
+    public function load(Model $m, $id, string $table = null)
+>>>>>>> Move types to code if possible
     {
         if (isset($m->table) && !isset($this->data[$m->table])) {
             throw (new Exception('Table was not found in the array data source'))
@@ -100,10 +114,18 @@ class Array_ extends Persistence
      * Tries to load model and return data record.
      * Doesn't throw exception if model can't be loaded.
      *
+<<<<<<< develop
      * @param mixed  $id
      * @param string $table
      */
     public function tryLoad(Model $m, $id, $table = null): ?array
+=======
+     * @param mixed $id
+     *
+     * @return array|false
+     */
+    public function tryLoad(Model $m, $id, string $table = null)
+>>>>>>> Move types to code if possible
     {
         if (!isset($table)) {
             $table = $m->table;
@@ -120,9 +142,15 @@ class Array_ extends Persistence
      * Tries to load first available record and return data record.
      * Doesn't throw exception if model can't be loaded or there are no data records.
      *
+<<<<<<< develop
      * @param mixed $table
      */
     public function tryLoadAny(Model $m, $table = null): ?array
+=======
+     * @return array|false
+     */
+    public function tryLoadAny(Model $m, string $table = null)
+>>>>>>> Move types to code if possible
     {
         if (!isset($table)) {
             $table = $m->table;
@@ -144,12 +172,11 @@ class Array_ extends Persistence
     /**
      * Inserts record in data array and returns new record ID.
      *
-     * @param array  $data
-     * @param string $table
+     * @param array $data
      *
      * @return mixed
      */
-    public function insert(Model $m, $data, $table = null)
+    public function insert(Model $m, $data, string $table = null)
     {
         if (!isset($table)) {
             $table = $m->table;
@@ -169,13 +196,11 @@ class Array_ extends Persistence
     /**
      * Updates record in data array and returns record ID.
      *
-     * @param mixed  $id
-     * @param array  $data
-     * @param string $table
+     * @param mixed $id
      *
      * @return mixed
      */
-    public function update(Model $m, $id, $data, $table = null)
+    public function update(Model $m, $id, array $data, string $table = null)
     {
         if (!isset($table)) {
             $table = $m->table;
@@ -195,10 +220,9 @@ class Array_ extends Persistence
     /**
      * Deletes record in data array.
      *
-     * @param mixed  $id
-     * @param string $table
+     * @param mixed $id
      */
-    public function delete(Model $m, $id, $table = null)
+    public function delete(Model $m, $id, string $table = null)
     {
         if (!isset($table)) {
             $table = $m->table;
@@ -210,12 +234,13 @@ class Array_ extends Persistence
     /**
      * Generates new record ID.
      *
-     * @param Model  $m
-     * @param string $table
-     *
-     * @return string
+     * @return mixed
      */
+<<<<<<< develop
     public function generateNewId($m, $table = null)
+=======
+    public function generateNewID(Model $m, string $table = null)
+>>>>>>> Move types to code if possible
     {
         if (!isset($table)) {
             $table = $m->table;
@@ -242,10 +267,8 @@ class Array_ extends Persistence
 
     /**
      * Prepare iterator.
-     *
-     * @return array
      */
-    public function prepareIterator(Model $m)
+    public function prepareIterator(Model $m): array
     {
         return $m->action('select')->get();
     }
@@ -253,12 +276,9 @@ class Array_ extends Persistence
     /**
      * Export all DataSet.
      *
-     * @param array|null $fields
-     * @param bool       $typecast_data Should we typecast exported data
-     *
-     * @return array
+     * @param bool $typecast_data Should we typecast exported data
      */
-    public function export(Model $m, $fields = null, $typecast_data = true)
+    public function export(Model $m, array $fields = null, bool $typecast_data = true): array
     {
         $data = $m->action('select', [$fields])->get();
 
@@ -273,12 +293,8 @@ class Array_ extends Persistence
 
     /**
      * Typecast data and return Iterator of data array.
-     *
-     * @param array $fields
-     *
-     * @return \atk4\data\Action\Iterator
      */
-    public function initAction(Model $m, $fields = null)
+    public function initAction(Model $m, array $fields = null): \atk4\data\Action\Iterator
     {
         $keys = $fields ? array_flip($fields) : null;
 
@@ -293,11 +309,12 @@ class Array_ extends Persistence
 
     /**
      * Will set limit defined inside $m onto data.
-     *
-     * @param Model         $m
-     * @param ArrayIterator $action
      */
+<<<<<<< develop
     protected function setLimitOrder($m, $action)
+=======
+    protected function setLimitOrder(Model $m, ArrayIterator &$action)
+>>>>>>> Move types to code if possible
     {
         // first order by
         if ($m->order) {
@@ -315,9 +332,6 @@ class Array_ extends Persistence
 
     /**
      * Will apply conditions defined inside $m onto query $q.
-     *
-     * @param Model                      $m
-     * @param \atk4\data\Action\Iterator $q
      *
      * @return \atk4\data\Action\Iterator|null
      */
@@ -377,13 +391,9 @@ class Array_ extends Persistence
     /**
      * Various actions possible here, mostly for compatibility with SQLs.
      *
-     * @param Model  $m
-     * @param string $type
-     * @param array  $args
-     *
      * @return mixed
      */
-    public function action($m, $type, $args = [])
+    public function action(Model $m, string $type, array $args = [])
     {
         if (!is_array($args)) {
             throw (new Exception('$args must be an array'))

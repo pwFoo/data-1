@@ -33,9 +33,14 @@ class Persistence
      * @param string $password
      * @param array  $args
      *
+<<<<<<< develop
      * @return Persistence
+=======
+     * @throws Exception
+     * @throws \atk4\dsql\Exception
+>>>>>>> Move types to code if possible
      */
-    public static function connect($dsn, $user = null, $password = null, $args = [])
+    public static function connect($dsn, $user = null, $password = null, $args = []): self
     {
         // Process DSN string
         $dsn = \atk4\dsql\Connection::normalizeDsn($dsn, $user, $password);
@@ -71,7 +76,7 @@ class Persistence
     /**
      * Disconnect from database explicitly.
      */
-    public function disconnect()
+    public function disconnect(): void
     {
     }
 
@@ -121,13 +126,11 @@ class Persistence
      * persistences will support atomic operations, so by default we just
      * don't do anything.
      *
-     * @param callable $f
-     *
      * @return mixed
      */
-    public function atomic($f)
+    public function atomic(callable $fx, ...$arg)
     {
-        return call_user_func($f);
+        return call_user_func($fx, ...$arg);
     }
 
     /**
@@ -149,12 +152,8 @@ class Persistence
      *     'age'=>30,
      *     'is_married'=>1
      *   ]
-     *
-     * @param array $row
-     *
-     * @return array
      */
-    public function typecastSaveRow(Model $m, $row)
+    public function typecastSaveRow(Model $m, array $row): array
     {
         if (!$row) {
             return $row;
@@ -216,12 +215,8 @@ class Persistence
      * NOTE: Please DO NOT perform "actual" field mapping here, because data
      * may be "aliased" from SQL persistences or mapped depending on persistence
      * driver.
-     *
-     * @param array $row
-     *
-     * @return array
      */
-    public function typecastLoadRow(Model $m, $row)
+    public function typecastLoadRow(Model $m, array $row): array
     {
         if (!$row) {
             return $row;
@@ -451,7 +446,11 @@ class Persistence
      *
      * @return mixed
      */
+<<<<<<< develop
     public function jsonDecode(Field $f, string $json, bool $assoc = true)
+=======
+    public function jsonDecode(Field $f, string $value, bool $assoc = true)
+>>>>>>> Move types to code if possible
     {
         // constant supported only starting PHP 7.3
         if (!defined('JSON_THROW_ON_ERROR')) {
@@ -472,10 +471,8 @@ class Persistence
      * JSON encoding with proper error treatment.
      *
      * @param mixed $value
-     *
-     * @return string
      */
-    public function jsonEncode(Field $f, $value)
+    public function jsonEncode(Field $f, $value): string
     {
         // constant supported only starting PHP 7.3
         if (!defined('JSON_THROW_ON_ERROR')) {

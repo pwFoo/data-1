@@ -87,7 +87,14 @@ class Email extends Field
         return parent::normalize(implode(', ', $emails));
     }
 
+<<<<<<< develop
     private function hasAnyDnsRecord(string $domain, array $types = ['MX', 'A', 'AAAA', 'CNAME']): bool
+=======
+    /**
+     * Return translated address.
+     */
+    protected function idn_to_ascii(string $domain): string
+>>>>>>> Move types to code if possible
     {
         foreach (array_unique(array_map('strtoupper', $types)) as $t) {
             $dnsConsts = [

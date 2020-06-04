@@ -211,14 +211,21 @@ class Field implements Expressionable
     /**
      * Constructor. You can pass field properties as array.
      *
+<<<<<<< develop
      * @param array $defaults
+=======
+     * @throws Exception
+>>>>>>> Move types to code if possible
      */
-    public function __construct($defaults = [])
+    public function __construct(array $defaults = [])
     {
+<<<<<<< develop
         if (!is_array($defaults)) {
             throw (new Exception('Field requires array for defaults'))
                 ->addMoreInfo('arg', $defaults);
         }
+=======
+>>>>>>> Move types to code if possible
         foreach ($defaults as $key => $val) {
             if (is_array($val)) {
                 $this->{$key} = array_merge(isset($this->{$key}) && is_array($this->{$key}) ? $this->{$key} : [], $val);
@@ -547,16 +554,26 @@ class Field implements Expressionable
     /**
      * When field is used as expression, this method will be called.
      * Universal way to convert ourselves to expression. Off-load implementation into persistence.
-     *
-     * @param Expression $expression
-     *
-     * @return Expression
      */
+<<<<<<< develop
     public function getDsqlExpression($expression)
     {
         if (!$this->owner->persistence || !$this->owner->persistence instanceof Persistence\Sql) {
+=======
+    public function getDSQLExpression(Expression $expression): Expression
+    {
+<<<<<<< develop
+        if (!$this->owner->persistence || !$this->owner->persistence instanceof Persistence\SQL) {
+>>>>>>> Move types to code if possible
             throw (new Exception('Field must have SQL persistence if it is used as part of expression'))
                 ->addMoreInfo('persistence', $this->owner->persistence ?? null);
+=======
+        if ($this->owner->persistence instanceof Persistence\SQL) {
+            throw new Exception([
+                'Field must have SQL persistence if it is used as part of expression',
+                'persistence' => $this->owner->persistence ?? null,
+            ]);
+>>>>>>> Move types to code if possible
         }
 
         return $this->owner->persistence->getFieldSqlExpression($this, $expression);

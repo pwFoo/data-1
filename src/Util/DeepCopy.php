@@ -26,12 +26,12 @@ class DeepCopy
     public const HOOK_AFTER_COPY = self::class . '@afterCopy';
 
     /**
-     * @var \atk4\data\Model from which we want to copy records
+     * @var Model from which we want to copy records
      */
     protected $source;
 
     /**
-     * @var \atk4\data\Model in which we want to copy records into
+     * @var Model in which we want to copy records into
      */
     protected $destination;
 
@@ -65,7 +65,7 @@ class DeepCopy
      *
      * @return $this
      */
-    public function from(Model $source)
+    public function from(Model $source): self
     {
         $this->source = $source;
 
@@ -77,7 +77,7 @@ class DeepCopy
      *
      * @return $this
      */
-    public function to(Model $destination)
+    public function to(Model $destination): self
     {
         $this->destination = $destination;
 
@@ -90,10 +90,8 @@ class DeepCopy
 
     /**
      * Set references to copy.
-     *
-     * @return $this
      */
-    public function with(array $references)
+    public function with(array $references): self
     {
         $this->references = $references;
 
@@ -104,10 +102,8 @@ class DeepCopy
      * Specifies which fields shouldn't be copied. May also contain arrays
      * for related entries.
      * ->excluding(['name', 'address_id'=>['city']]);.
-     *
-     * @return $this
      */
-    public function excluding(array $exclusions)
+    public function excluding(array $exclusions): self
     {
         $this->exclusions = $exclusions;
 
@@ -129,12 +125,8 @@ class DeepCopy
      *              return $data;
      *          }]
      *  );
-     *
-     * @param array $transforms
-     *
-     * @return $this
      */
-    public function transformData($transforms)
+    public function transformData(array $transforms): self
     {
         $this->transforms = $transforms;
 
@@ -161,9 +153,14 @@ class DeepCopy
     /**
      * Copy records.
      *
+<<<<<<< develop
      * @return Model Destination model
+=======
+     * @throws DeepCopyException
+     * @throws Exception
+>>>>>>> Move types to code if possible
      */
-    public function copy()
+    public function copy(): Model
     {
         return $this->_copy(
             $this->source,
@@ -177,12 +174,17 @@ class DeepCopy
     /**
      * Internal method for copying records.
      *
-     * @param array $exclusions of fields to exclude
-     * @param array $transforms callbacks for data transforming
+     * @param array $exclusions Fields to exclude
+     * @param array $transforms Callbacks for data transforming
      *
+<<<<<<< develop
      * @return Model Destination model
+=======
+     * @throws DeepCopyException
+     * @throws Exception
+>>>>>>> Move types to code if possible
      */
-    protected function _copy(Model $source, Model $destination, array $references, array $exclusions, array $transforms)
+    protected function _copy(Model $source, Model $destination, array $references, array $exclusions, array $transforms): Model
     {
         try {
             // Perhaps source was already copied, then simply load destination model and return

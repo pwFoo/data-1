@@ -18,12 +18,8 @@ class ContainsMany extends ContainsOne
      * Returns default persistence. It will be empty at this point.
      *
      * @see ref()
-     *
-     * @param Model $model Referenced model
-     *
-     * @return Persistence|false
      */
-    protected function getDefaultPersistence($model)
+    protected function getDefaultPersistence(Model $model): Persistence
     {
         $m = $this->owner;
 
@@ -51,10 +47,8 @@ class ContainsMany extends ContainsOne
 
     /**
      * Returns referenced model.
-     *
-     * @param array $defaults Properties
      */
-    public function ref($defaults = []): Model
+    public function ref(array $defaults = []): Model
     {
         // get model
         // will not use ID field (no, sorry, will have to use it)

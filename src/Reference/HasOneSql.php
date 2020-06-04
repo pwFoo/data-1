@@ -85,12 +85,17 @@ class HasOneSql extends HasOne
      *
      * addFields(['from', 'to'], ['type' => 'date']);
      *
+<<<<<<< develop
      * @param array $fields
      * @param array $defaults
+=======
+     * @throws Exception
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      *
      * @return $this
      */
-    public function addFields($fields = [], $defaults = [])
+    public function addFields(array $fields = [], array $defaults = []): self
     {
         foreach ($fields as $field => $alias) {
             if (is_array($alias)) {
@@ -119,9 +124,13 @@ class HasOneSql extends HasOne
     /**
      * Creates model that can be used for generating sub-query actions.
      *
+<<<<<<< develop
      * @param array $defaults Properties
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function refLink($defaults = []): Model
+    public function refLink(array $defaults = []): Model
     {
         $m = $this->getModel($defaults);
 
@@ -136,9 +145,14 @@ class HasOneSql extends HasOne
     /**
      * Navigate to referenced model.
      *
+<<<<<<< develop
      * @param array $defaults Properties
+=======
+     * @throws Exception
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function ref($defaults = []): Model
+    public function ref(array $defaults = []): Model
     {
         $m = parent::ref($defaults);
 
@@ -177,9 +191,18 @@ class HasOneSql extends HasOne
      *
      * This method returns newly created expression field.
      *
+<<<<<<< develop
      * @param array $defaults Properties
+=======
+     * @throws Exception
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
+<<<<<<< develop:src/Reference/HasOneSql.php
     public function addTitle($defaults = []): FieldSqlExpression
+=======
+    public function addTitle(array $defaults = []): Field_SQL_Expression
+>>>>>>> Move types to code if possible:src/Reference/HasOne_SQL.php
     {
         if (!is_array($defaults)) {
             throw (new Exception('Argument to addTitle should be an array'))
@@ -242,11 +265,16 @@ class HasOneSql extends HasOne
      *
      * This will add expression 'user' equal to ref('user_id')['name'];
      *
+<<<<<<< develop
      * @param array $defaults Properties
+=======
+     * @throws Exception
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      *
      * @return $this
      */
-    public function withTitle($defaults = [])
+    public function withTitle(array $defaults = []): self
     {
         $this->addTitle($defaults);
 

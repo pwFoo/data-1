@@ -104,9 +104,13 @@ class Reference
      * Returns destination model that is linked through this reference. Will apply
      * necessary conditions.
      *
+<<<<<<< develop
      * @param array $defaults Properties
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function getModel($defaults = []): Model
+    public function getModel(array $defaults = []): Model
     {
         // set table_alias
         if (!isset($defaults['table_alias'])) {
@@ -158,10 +162,15 @@ class Reference
     /**
      * Adds model to persistence.
      *
+<<<<<<< develop
      * @param Model $model
      * @param array $defaults
+=======
+     * @throws Exception
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    protected function addToPersistence($model, $defaults = []): Model
+    protected function addToPersistence(Model $model, array $defaults = []): Model
     {
         if (!$model->persistence && $p = $this->getDefaultPersistence($model)) {
             $p->add($model, $defaults);
@@ -178,11 +187,9 @@ class Reference
     /**
      * Returns default persistence.
      *
-     * @param Model $model Referenced model
-     *
      * @return Persistence|false
      */
-    protected function getDefaultPersistence($model)
+    protected function getDefaultPersistence(Model $model)
     {
         $m = $this->owner;
 
@@ -200,9 +207,13 @@ class Reference
      * Returns referenced model without any extra conditions. However other
      * relationship types may override this to imply conditions.
      *
+<<<<<<< develop
      * @param array $defaults Properties
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function ref($defaults = []): Model
+    public function ref(array $defaults = []): Model
     {
         return $this->getModel($defaults);
     }
@@ -212,9 +223,13 @@ class Reference
      * must always respond with Model that does not look into current record
      * or scope.
      *
+<<<<<<< develop
      * @param array $defaults Properties
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function refModel($defaults = []): Model
+    public function refModel(array $defaults = []): Model
     {
         return $this->getModel($defaults);
     }

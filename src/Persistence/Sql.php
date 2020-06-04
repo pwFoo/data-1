@@ -106,7 +106,7 @@ class Sql extends Persistence
     /**
      * Disconnect from database explicitly.
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         parent::disconnect();
 
@@ -126,13 +126,11 @@ class Sql extends Persistence
      * the code inside callback will fail, then all of the transaction
      * will be also rolled back.
      *
-     * @param callable $f
-     *
      * @return mixed
      */
-    public function atomic($f)
+    public function atomic(callable $fx, ...$args)
     {
-        return $this->connection->atomic($f);
+        return $this->connection->atomic($fx, ...$args);
     }
 
     /**
@@ -177,7 +175,7 @@ class Sql extends Persistence
     /**
      * Initialize persistence.
      */
-    protected function initPersistence(Model $m)
+    protected function initPersistence(Model $m): void
     {
         $m->addMethod('expr', \Closure::fromCallable([$this, 'expr']));
         $m->addMethod('dsql', \Closure::fromCallable([$this, 'dsql']));
@@ -188,9 +186,8 @@ class Sql extends Persistence
      * Creates new Expression object from expression string.
      *
      * @param mixed $expr
-     * @param array $args
      */
-    public function expr(Model $m, $expr, $args = []): Expression
+    public function expr(Model $m, $expr, array $args = []): Expression
     {
         if (!is_string($expr)) {
             return $this->connection->expr($expr, $args);
@@ -214,7 +211,11 @@ class Sql extends Persistence
     /**
      * Creates new Query object with current_timestamp(precision) expression.
      */
+<<<<<<< develop:src/Persistence/Sql.php
     public function exprNow(int $precision = null): Expression
+=======
+    public function exprNow(int $precision = null): Query
+>>>>>>> Move types to code if possible:src/Persistence/SQL.php
     {
         return $this->connection->dsql()->exprNow($precision);
     }
@@ -285,10 +286,9 @@ class Sql extends Persistence
     /**
      * Adds model fields in Query.
      *
-     * @param Query            $q
      * @param array|false|null $fields
      */
-    public function initQueryFields(Model $m, $q, $fields = null)
+    public function initQueryFields(Model $m, Query $q, $fields = null)
     {
         // do nothing on purpose
         if ($fields === false) {
@@ -596,13 +596,8 @@ class Sql extends Persistence
 
     /**
      * Executing $model->action('update') will call this method.
-     *
-     * @param string $type
-     * @param array  $args
-     *
-     * @return Query
      */
-    public function action(Model $m, $type, $args = [])
+    public function action(Model $m, string $type, array $args = []): Query
     {
         if (!is_array($args)) {
             throw (new Exception('$args must be an array'))
@@ -702,7 +697,7 @@ class Sql extends Persistence
      *
      * @param mixed $id
      *
-     * @return array
+     * @return array|null
      */
     public function tryLoad(Model $m, $id)
     {
@@ -747,10 +742,8 @@ class Sql extends Persistence
      * Loads a record from model and returns a associative array.
      *
      * @param mixed $id
-     *
-     * @return array
      */
-    public function load(Model $m, $id)
+    public function load(Model $m, $id): array
     {
         $data = $this->tryLoad($m, $id);
 
@@ -767,7 +760,7 @@ class Sql extends Persistence
     /**
      * Tries to load any one record.
      *
-     * @return array
+     * @return array|null
      */
     public function tryLoadAny(Model $m)
     {
@@ -806,10 +799,8 @@ class Sql extends Persistence
 
     /**
      * Loads any one record.
-     *
-     * @return array
      */
-    public function loadAny(Model $m)
+    public function loadAny(Model $m): array
     {
         $data = $this->tryLoadAny($m);
 
@@ -861,10 +852,8 @@ class Sql extends Persistence
      *
      * @param array|null $fields
      * @param bool       $typecast_data Should we typecast exported data
-     *
-     * @return array
      */
-    public function export(Model $m, $fields = null, $typecast_data = true)
+    public function export(Model $m, $fields = null, bool $typecast_data = true): array
     {
         $data = $m->action('select', [$fields])->get();
 
@@ -879,10 +868,8 @@ class Sql extends Persistence
 
     /**
      * Prepare iterator.
-     *
-     * @return \PDOStatement
      */
-    public function prepareIterator(Model $m)
+    public function prepareIterator(Model $m): \PDOStatement
     {
         try {
             $export = $m->action('select');
@@ -901,9 +888,8 @@ class Sql extends Persistence
      * Updates record in database.
      *
      * @param mixed $id
-     * @param array $data
      */
-    public function update(Model $m, $id, $data)
+    public function update(Model $m, $id, array $data)
     {
         if (!$m->id_field) {
             throw new Exception('id_field of a model is not set. Unable to update record.');

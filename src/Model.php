@@ -172,7 +172,7 @@ class Model implements \IteratorAggregate
     /**
      * Persistence driver inherited from atk4\data\Persistence.
      *
-     * @var Persistence
+     * @var Persistence|Persistence\SQL
      */
     public $persistence;
 
@@ -467,7 +467,7 @@ class Model implements \IteratorAggregate
      *
      * @return array [field => err_spec]
      */
-    public function validate($intent = null)
+    public function validate(string $intent = null): array
     {
         $errors = [];
         foreach ($this->hook(self::HOOK_VALIDATE, [$intent]) as $handler_error) {
@@ -494,12 +494,15 @@ class Model implements \IteratorAggregate
     /**
      * Adds new field into model.
      *
-     * @param string       $name
      * @param array|object $seed
      *
+<<<<<<< develop
      * @return Field
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function addField($name, $seed = [])
+    public function addField(string $name, $seed = []): Field
     {
         if (is_object($seed)) {
             $field = $seed;
@@ -513,11 +516,15 @@ class Model implements \IteratorAggregate
     /**
      * Given a field seed, return a field object.
      *
+<<<<<<< develop
      * @param array $seed
      *
      * @return Field
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function fieldFactory($seed = [])
+    public function fieldFactory(array $seed = []): Field
     {
         $seed = $this->mergeSeeds(
             $seed,
@@ -538,11 +545,15 @@ class Model implements \IteratorAggregate
     /**
      * Adds multiple fields into model.
      *
+<<<<<<< develop
      * @param array $defaults
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      *
      * @return $this
      */
-    public function addFields(array $fields, $defaults = [])
+    public function addFields(array $fields, array $defaults = []): self
     {
         foreach ($fields as $key => $field) {
             if (!is_int($key)) {
@@ -573,7 +584,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function removeField(string $name)
+    public function removeField(string $name): self
     {
         $this->getField($name); // better exception if field does not exist
 
@@ -587,6 +598,15 @@ class Model implements \IteratorAggregate
         return $this->_hasInCollection($name, 'fields');
     }
 
+<<<<<<< develop
+=======
+    /**
+     * Same as hasField, but will throw exception if field not found.
+     * Similar to getElement().
+     *
+     * @throws \atk4\core\Exception
+     */
+>>>>>>> Move types to code if possible
     public function getField(string $name): Field
     {
         try {
@@ -601,11 +621,15 @@ class Model implements \IteratorAggregate
     /**
      * Sets which fields we will select.
      *
+<<<<<<< develop
      * @param array $fields
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      *
      * @return $this
      */
-    public function onlyFields($fields = [])
+    public function onlyFields(array $fields = []): self
     {
         $this->hook(self::HOOK_ONLY_FIELDS, [&$fields]);
         $this->only_fields = $fields;
@@ -618,14 +642,25 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function allFields()
+    public function allFields(): self
     {
         $this->only_fields = false;
 
         return $this;
     }
 
+<<<<<<< develop
     private function checkOnlyFieldsField(string $field)
+=======
+    /**
+     * Normalize field name.
+     *
+     * @param mixed $field
+     *
+     * @throws \atk4\core\Exception
+     */
+    private function normalizeFieldName($field): string
+>>>>>>> Move types to code if possible
     {
         $this->getField($field); // test if field exists
 
@@ -660,12 +695,7 @@ class Model implements \IteratorAggregate
         return false;
     }
 
-    /**
-     * @param string|array|null $filter
-     *
-     * @return array
-     */
-    public function getFields($filter = null)
+    public function getFields(array $filter = null): array
     {
         if ($filter === null) {
             return $this->fields;
@@ -704,7 +734,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function set($field, $value = null)
+    public function set($field, $value = null): self
     {
         if (func_num_args() === 1) {
             foreach ($field as $key => $value) {
@@ -856,10 +886,8 @@ class Model implements \IteratorAggregate
     /**
      * Return (possibly localized) $model->caption.
      * If caption is not set, then generate it from model class name.
-     *
-     * @return string
      */
-    public function getModelCaption()
+    public function getModelCaption(): string
     {
         return $this->caption ?: $this->readableCaption(
             strpos(static::class, 'class@anonymous') === 0 ? get_parent_class(static::class) : static::class
@@ -882,10 +910,8 @@ class Model implements \IteratorAggregate
 
     /**
      * Returns array of model record titles [id => title].
-     *
-     * @return array
      */
-    public function getTitles()
+    public function getTitles(): array
     {
         $field = $this->title_field && $this->hasField($this->title_field) ? $this->title_field : $this->id_field;
 
@@ -902,6 +928,11 @@ class Model implements \IteratorAggregate
      *  - if get() is expensive (e.g. retrieve object).
      *
      * @param mixed $value
+<<<<<<< develop
+=======
+     *
+     * @return bool true if $value matches saved one
+>>>>>>> Move types to code if possible
      */
     public function compare(string $name, $value): bool
     {
@@ -921,11 +952,9 @@ class Model implements \IteratorAggregate
     /**
      * Remove current field value and use default.
      *
-     * @param string|array $name
-     *
      * @return $this
      */
-    public function _unset($name)
+    public function _unset(string $name)
     {
         $this->checkOnlyFieldsField($name);
 
@@ -939,6 +968,107 @@ class Model implements \IteratorAggregate
 
     // }}}
 
+<<<<<<< develop
+=======
+    // {{{ UserAction support
+
+    /**
+     * Register new user action for this model. By default UI will allow users to trigger actions
+     * from UI.
+     *
+     * @param string         $name     Action name
+     * @param array|callable $defaults
+     */
+    public function addAction(string $name, $defaults = []): UserAction\Generic
+    {
+        if (is_callable($defaults)) {
+            $defaults = ['callback' => $defaults];
+        }
+
+        if (!isset($defaults['caption'])) {
+            $defaults['caption'] = $this->readableCaption($name);
+        }
+
+        /** @var UserAction\Generic $action */
+        $action = $this->factory($this->_default_seed_action, $defaults);
+
+        $this->_addIntoCollection($name, $action, 'actions');
+
+        return $action;
+    }
+
+    /**
+     * Returns list of actions for this model. Can filter actions by scope.
+     * It will also skip system actions (where system === true).
+     *
+<<<<<<< develop
+     * @param int $scope e.g. UserAction::ALL_RECORDS
+=======
+     * @param string|null $scope e.g. UserAction::ALL_RECORDS
+     *
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
+     */
+    public function getActions(string $scope = null): array
+    {
+        return array_filter($this->actions, function ($action) use ($scope) {
+            return !$action->system && ($scope === null || $action->scope === $scope);
+        });
+    }
+
+    /**
+     * Returns true if user action with a corresponding name exists.
+     *
+     * @param string $name Action name
+     */
+<<<<<<< develop
+    public function hasAction($name): bool
+=======
+    public function hasAction(string $name)
+>>>>>>> Move types to code if possible
+    {
+        return $this->_hasInCollection($name, 'actions');
+    }
+
+    /**
+     * Returns one action object of this model. If action not defined, then throws exception.
+     *
+     * @param string $name Action name
+     */
+    public function getAction(string $name): UserAction\Generic
+    {
+        return $this->_getFromCollection($name, 'actions');
+    }
+
+    /**
+     * Execute specified action with specified arguments.
+     *
+     * @param string $name Action name
+     */
+    public function executeAction(string $name, ...$args)
+    {
+        $this->getAction($name)->execute(...$args);
+    }
+
+    /**
+     * Remove specified action(s).
+     *
+     * @param string|array $name
+     *
+     * @return $this
+     */
+    public function removeAction($name): self
+    {
+        foreach ((array) $name as $action) {
+            $this->_removeFromCollection($action, 'actions');
+        }
+
+        return $this;
+    }
+
+    // }}}
+
+>>>>>>> Move types to code if possible
     // {{{ DataSet logic
 
     /**
@@ -972,7 +1102,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function addCondition($field, $operator = null, $value = null)
+    public function addCondition($field, $operator = null, $value = null): self
     {
         if (is_array($field)) {
             $this->conditions[] = [$field];
@@ -1018,13 +1148,17 @@ class Model implements \IteratorAggregate
     }
 
     /**
-     * Shortcut for using addCondition(id_field, $id).
+     * Shortcut for using Model::addCondition(id_field, $id).
      *
      * @param mixed $id
      *
      * @return $this
      */
+<<<<<<< develop
     public function withId($id)
+=======
+    public function withID($id): self
+>>>>>>> Move types to code if possible
     {
         return $this->addCondition($this->id_field, $id);
     }
@@ -1036,7 +1170,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function addWith(self $model, string $alias, array $mapping = [], bool $recursive = false)
+    public function addWith(self $model, string $alias, array $mapping = [], bool $recursive = false): self
     {
         if (isset($this->with[$alias])) {
             throw (new Exception('With cursor already set with this alias'))
@@ -1055,12 +1189,11 @@ class Model implements \IteratorAggregate
     /**
      * Set order for model records. Multiple calls.
      *
-     * @param mixed     $field
-     * @param bool|null $desc
+     * @param mixed $field
      *
      * @return $this
      */
-    public function setOrder($field, $desc = null)
+    public function setOrder($field, bool $desc = null): self
     {
         // fields passed as CSV string
         if (is_string($field) && strpos($field, ',') !== false) {
@@ -1111,12 +1244,9 @@ class Model implements \IteratorAggregate
     /**
      * Set limit of DataSet.
      *
-     * @param int      $count
-     * @param int|null $offset
-     *
      * @return $this
      */
-    public function setLimit($count, $offset = null)
+    public function setLimit(int $count, int $offset = 0): self
     {
         $this->limit = [$count, $offset];
 
@@ -1140,7 +1270,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function unload()
+    public function unload(): self
     {
         $this->hook(self::HOOK_BEFORE_UNLOAD);
         $this->id = null;
@@ -1158,7 +1288,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function load($id, Persistence $from_persistence = null)
+    public function load($id, Persistence $from_persistence = null): self
     {
         if (!$from_persistence) {
             $from_persistence = $this->persistence;
@@ -1196,7 +1326,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function reload()
+    public function reload(): self
     {
         $id = $this->id;
         $this->unload();
@@ -1213,7 +1343,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function duplicate($new_id = null)
+    public function duplicate($new_id = null): self
     {
         $this->id = null;
 
@@ -1247,11 +1377,9 @@ class Model implements \IteratorAggregate
      * Use this instead of save() if you want to squeeze a
      * little more performance out.
      *
-     * @param array $data
-     *
      * @return $this
      */
-    public function saveAndUnload($data = [])
+    public function saveAndUnload(array $data = []): self
     {
         $ras = $this->reload_after_save;
         $this->reload_after_save = false;
@@ -1320,19 +1448,20 @@ class Model implements \IteratorAggregate
      * See https://github.com/atk4/data/issues/111 for
      * use-case examples.
      *
-     * @param Persistence $persistence
-     * @param mixed       $id
-     * @param string      $class
+     * @param mixed $id
      *
      * @return $this
      */
-    public function withPersistence($persistence, $id = null, string $class = null)
+    public function withPersistence(Persistence $persistence, $id = null, string $class = null): self
     {
+<<<<<<< develop
         if (!$persistence instanceof Persistence) {
             throw (new Exception('Please supply valid persistence'))
                 ->addMoreInfo('arg', $persistence);
         }
 
+=======
+>>>>>>> Move types to code if possible
         if (!$class) {
             $class = static::class;
         }
@@ -1363,7 +1492,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function tryLoad($id)
+    public function tryLoad($id): self
     {
         if (!$this->persistence) {
             throw new Exception('Model is not associated with any database');
@@ -1399,7 +1528,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function loadAny()
+    public function loadAny(): self
     {
         if (!$this->persistence) {
             throw new Exception('Model is not associated with any database');
@@ -1438,7 +1567,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function tryLoadAny()
+    public function tryLoadAny(): self
     {
         if (!$this->persistence) {
             throw new Exception('Model is not associated with any database');
@@ -1476,12 +1605,11 @@ class Model implements \IteratorAggregate
     /**
      * Load record by condition.
      *
-     * @param mixed $field_name
      * @param mixed $value
      *
      * @return $this
      */
-    public function loadBy(string $field_name, $value)
+    public function loadBy(string $field_name, $value): self
     {
         // store
         $field = $this->getField($field_name);
@@ -1518,7 +1646,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function tryLoadBy(string $field_name, $value)
+    public function tryLoadBy(string $field_name, $value): self
     {
         // store
         $field_name = $this->getField($field_name);
@@ -1556,7 +1684,10 @@ class Model implements \IteratorAggregate
      */
     public $_dirty_after_reload = [];
 
-    public function save($data = [], Persistence $to_persistence = null)
+    /**
+     * @return mixed
+     */
+    public function save(array $data = [], Persistence $to_persistence = null)
     {
         if (!$to_persistence) {
             $to_persistence = $this->persistence;
@@ -1685,7 +1816,11 @@ class Model implements \IteratorAggregate
      * @param Model $m   Model where to insert
      * @param array $row Data row to insert
      */
+<<<<<<< develop
     protected function _rawInsert(self $m, array $row)
+=======
+    protected function _rawInsert(self $m, $row)
+>>>>>>> Move types to code if possible
     {
         $m->reload_after_save = false;
         $m->unload();
@@ -1763,7 +1898,11 @@ class Model implements \IteratorAggregate
      * @param string     $key_field     Optional name of field which value we will use as array key
      * @param bool       $typecast_data Should we typecast exported data
      */
+<<<<<<< develop
     public function export($fields = null, $key_field = null, $typecast_data = true): array
+=======
+    public function export(array $fields = null, string $key_field = null, bool $typecast_data = true): array
+>>>>>>> Move types to code if possible
     {
         if (!$this->persistence->hasMethod('export')) {
             throw new Exception('Persistence does not support export()');
@@ -1885,9 +2024,13 @@ class Model implements \IteratorAggregate
     /**
      * Returns iterator.
      *
+<<<<<<< develop
      * @return \Iterator
+=======
+     * @return \PDOStatement
+>>>>>>> Move types to code if possible
      */
-    public function rawIterator()
+    public function rawIterator(): \Traversable
     {
         return $this->persistence->prepareIterator($this);
     }
@@ -1899,7 +2042,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function each($method)
+    public function each($method): self
     {
         foreach ($this as $rec) {
             if (is_string($method)) {
@@ -1920,7 +2063,7 @@ class Model implements \IteratorAggregate
      *
      * @return $this
      */
-    public function delete($id = null)
+    public function delete($id = null): self
     {
         if ($this->read_only) {
             throw new Exception('Model is read-only and cannot be deleted');
@@ -1956,11 +2099,9 @@ class Model implements \IteratorAggregate
      * the code inside callback will fail, then all of the transaction
      * will be also rolled back.
      *
-     * @param callable $f
-     *
      * @return mixed
      */
-    public function atomic($f, Persistence $persistence = null)
+    public function atomic(callable $f, Persistence $persistence = null)
     {
         if (!$persistence) {
             $persistence = $this->persistence;
@@ -1982,12 +2123,16 @@ class Model implements \IteratorAggregate
     /**
      * Execute action.
      *
+<<<<<<< develop
      * @param string $mode
      * @param array  $args
      *
      * @return Query
+=======
+     * @throws Exception
+>>>>>>> Move types to code if possible
      */
-    public function action($mode, $args = [])
+    public function action(string $mode, array $args = []): Query
     {
         if (!$this->persistence) {
             throw new Exception('action() requires model to be associated with db');
@@ -2011,16 +2156,18 @@ class Model implements \IteratorAggregate
      * join will also query $foreign_table in order to find additional fields. When inserting
      * the record will be also added inside $foreign_table and relationship will be maintained.
      *
+<<<<<<< develop
      * @param string $foreign_table
      * @param array  $defaults
      *
      * @return Join
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function join($foreign_table, $defaults = [])
+    public function join(string $foreign_table, array $defaults = []): Join
     {
-        if (!is_array($defaults)) {
-            $defaults = ['master_field' => $defaults];
-        } elseif (isset($defaults[0])) {
+        if (isset($defaults[0])) {
             $defaults['master_field'] = $defaults[0];
             unset($defaults[0]);
         }
@@ -2037,16 +2184,17 @@ class Model implements \IteratorAggregate
      *
      * @see join()
      *
+<<<<<<< develop
      * @param string $foreign_table
      * @param array  $defaults
      *
      * @return Join
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function leftJoin($foreign_table, $defaults = [])
+    public function leftJoin(string $foreign_table, array $defaults = []): Join
     {
-        if (!is_array($defaults)) {
-            $defaults = ['master_field' => $defaults];
-        }
         $defaults['weak'] = true;
 
         return $this->join($foreign_table, $defaults);
@@ -2059,11 +2207,9 @@ class Model implements \IteratorAggregate
     /**
      * Private method.
      *
-     * @param string         $c        Class name
-     * @param string         $link     Link
      * @param array|callable $defaults Properties which we will pass to Reference object constructor
      */
-    protected function _hasReference($c, $link, $defaults = []): Reference
+    protected function _hasReference(string $className, string $link, $defaults = []): Reference
     {
         if (!is_array($defaults)) {
             $defaults = ['model' => $defaults ?: 'Model_' . $link];
@@ -2074,7 +2220,7 @@ class Model implements \IteratorAggregate
 
         $defaults[0] = $link;
 
-        $obj = $this->factory($c, $defaults);
+        $obj = $this->factory($className, $defaults);
 
         // if reference with such name already exists, then throw exception
         if ($this->hasElement($name = $obj->getDesiredName())) {
@@ -2091,10 +2237,9 @@ class Model implements \IteratorAggregate
      * Add generic relation. Provide your own call-back that will
      * return the model.
      *
-     * @param string         $link     Link
      * @param array|callable $callback Callback
      */
-    public function addRef($link, $callback): Reference
+    public function addRef(string $link, $callback): Reference
     {
         return $this->_hasReference($this->_default_seed_addRef, $link, $callback);
     }
@@ -2102,12 +2247,19 @@ class Model implements \IteratorAggregate
     /**
      * Add hasOne field.
      *
+<<<<<<< develop
      * @param string $link
      * @param array  $defaults
      *
      * @return Reference\HasOne
+=======
+     * @throws Exception
+     * @throws \atk4\core\Exception
+     *
+     * @return
+>>>>>>> Move types to code if possible
      */
-    public function hasOne($link, $defaults = []): Reference
+    public function hasOne(string $link, array $defaults = []): Reference\HasOne
     {
         return $this->_hasReference($this->_default_seed_hasOne, $link, $defaults);
     }
@@ -2115,12 +2267,17 @@ class Model implements \IteratorAggregate
     /**
      * Add hasMany field.
      *
+<<<<<<< develop
      * @param string $link
      * @param array  $defaults
      *
      * @return Reference\HasMany
+=======
+     * @throws Exception
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function hasMany($link, $defaults = []): Reference
+    public function hasMany(string $link, array $defaults = []): Reference\HasMany
     {
         return $this->_hasReference($this->_default_seed_hasMany, $link, $defaults);
     }
@@ -2128,12 +2285,17 @@ class Model implements \IteratorAggregate
     /**
      * Add containsOne field.
      *
+<<<<<<< develop
      * @param string $link
      * @param array  $defaults
      *
      * @return Reference\ContainsOne
+=======
+     * @throws Exception
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function containsOne($link, $defaults = []): Reference
+    public function containsOne(string $link, array $defaults = []): Reference\ContainsOne
     {
         return $this->_hasReference($this->_default_seed_containsOne, $link, $defaults);
     }
@@ -2141,12 +2303,17 @@ class Model implements \IteratorAggregate
     /**
      * Add containsMany field.
      *
+<<<<<<< develop
      * @param string $link
      * @param array  $defaults
      *
      * @return Reference\ContainsMany
+=======
+     * @throws Exception
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function containsMany($link, $defaults = []): Reference
+    public function containsMany(string $link, array $defaults = []): Reference\ContainsMany
     {
         return $this->_hasReference($this->_default_seed_containsMany, $link, $defaults);
     }
@@ -2154,12 +2321,16 @@ class Model implements \IteratorAggregate
     /**
      * Traverse to related model.
      *
+<<<<<<< develop
      * @param string $link
      * @param array  $defaults
      *
      * @return Model
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function ref($link, $defaults = []): self
+    public function ref(string $link, array $defaults = []): self
     {
         return $this->getRef($link)->ref($defaults);
     }
@@ -2167,12 +2338,16 @@ class Model implements \IteratorAggregate
     /**
      * Return related model.
      *
+<<<<<<< develop
      * @param string $link
      * @param array  $defaults
      *
      * @return Model
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function refModel($link, $defaults = []): self
+    public function refModel(string $link, array $defaults = []): self
     {
         return $this->getRef($link)->refModel($defaults);
     }
@@ -2180,12 +2355,16 @@ class Model implements \IteratorAggregate
     /**
      * Returns model that can be used for generating sub-query actions.
      *
+<<<<<<< develop
      * @param string $link
      * @param array  $defaults
      *
      * @return Model
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function refLink($link, $defaults = []): self
+    public function refLink(string $link, array $defaults = []): self
     {
         return $this->getRef($link)->refLink($defaults);
     }
@@ -2193,9 +2372,13 @@ class Model implements \IteratorAggregate
     /**
      * Return reference field.
      *
+<<<<<<< develop
      * @param string $link
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function getRef($link): Reference
+    public function getRef(string $link): Reference
     {
         return $this->getElement('#ref_' . $link);
     }
@@ -2218,9 +2401,15 @@ class Model implements \IteratorAggregate
     /**
      * Returns true if reference field exists.
      *
+<<<<<<< develop
      * @param string $link
      */
     public function hasRef($link): bool
+=======
+     * @return Field|bool
+     */
+    public function hasRef(string $link)
+>>>>>>> Move types to code if possible
     {
         return $this->hasElement('#ref_' . $link);
     }
@@ -2232,12 +2421,15 @@ class Model implements \IteratorAggregate
     /**
      * Add expression field.
      *
-     * @param string                $name
      * @param string|array|callable $expression
      *
+<<<<<<< develop
      * @return Field\Callback
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function addExpression($name, $expression)
+    public function addExpression(string $name, $expression): Field\Callback
     {
         if (!is_array($expression)) {
             $expression = ['expr' => $expression];
@@ -2258,12 +2450,15 @@ class Model implements \IteratorAggregate
     /**
      * Add expression field which will calculate its value by using callback.
      *
-     * @param string                $name
      * @param string|array|callable $expression
      *
+<<<<<<< develop
      * @return Field\Callback
+=======
+     * @throws \atk4\core\Exception
+>>>>>>> Move types to code if possible
      */
-    public function addCalculatedField($name, $expression)
+    public function addCalculatedField(string $name, $expression): Field\Callback
     {
         if (!is_array($expression)) {
             $expression = ['expr' => $expression];

@@ -59,9 +59,13 @@ class Boolean extends \atk4\data\Field
      *
      * @param mixed $value
      *
+<<<<<<< develop
      * @return bool
+=======
+     * @throws ValidationException
+>>>>>>> Move types to code if possible
      */
-    public function normalize($value)
+    public function normalize($value): bool
     {
         if ($value === null || $value === '') {
             return;
@@ -102,7 +106,7 @@ class Boolean extends \atk4\data\Field
      *
      * @param mixed $value
      */
-    public function validate($value)
+    public function validate($value): void
     {
         // if value required, then only valueTrue is allowed
         if ($this->required && $value !== $this->valueTrue) {

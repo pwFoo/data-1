@@ -80,7 +80,7 @@ class ContainsOne extends Reference
      *
      * @return Persistence|false
      */
-    protected function getDefaultPersistence($model)
+    protected function getDefaultPersistence($model): Persistence
     {
         $m = $this->owner;
 
@@ -104,10 +104,8 @@ class ContainsOne extends Reference
 
     /**
      * Returns referenced model with loaded data record.
-     *
-     * @param array $defaults Properties
      */
-    public function ref($defaults = []): Model
+    public function ref(array $defaults = []): Model
     {
         // get model
         // will not use ID field
