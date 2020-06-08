@@ -525,9 +525,7 @@ class Model implements \IteratorAggregate
             $this->_default_seed_addField
         );
 
-        $field = Field::fromSeed($seed);
-
-        return $field;
+        return Field::fromSeed($seed);
     }
 
     protected $typeToFieldSeed = [
@@ -1292,7 +1290,7 @@ class Model implements \IteratorAggregate
      */
     public function newInstance(string $class = null, array $options = [])
     {
-        $model = $this->factory([$class ?? static::class], $options);
+        $model = self::fromSeed([$class ?? static::class], $options);
 
         if ($this->persistence) {
             return $this->persistence->add($model);
@@ -2026,9 +2024,7 @@ class Model implements \IteratorAggregate
 
         $defaults[0] = $foreign_table;
 
-        $c = $this->_default_seed_join;
-
-        return $this->add($this->factory($c, $defaults));
+        return $this->add(Join::fromSeed($this->_default_seed_join, $defaults));
     }
 
     /**
@@ -2058,11 +2054,9 @@ class Model implements \IteratorAggregate
     /**
      * Private method.
      *
-     * @param string         $c        Class name
-     * @param string         $link     Link
      * @param array|callable $defaults Properties which we will pass to Reference object constructor
      */
-    protected function _hasReference($c, $link, $defaults = []): Reference
+    protected function _hasReference($class, string $link, $defaults = []): Reference
     {
         if (!is_array($defaults)) {
             $defaults = ['model' => $defaults ?: 'Model_' . $link];
@@ -2073,7 +2067,7 @@ class Model implements \IteratorAggregate
 
         $defaults[0] = $link;
 
-        $obj = $this->factory($c, $defaults);
+        $obj = Reference::fromSeed($class, $defaults);
 
         // if reference with such name already exists, then throw exception
         if ($this->hasElement($name = $obj->getDesiredName())) {
@@ -2245,9 +2239,7 @@ class Model implements \IteratorAggregate
             unset($expression[0]);
         }
 
-        $c = $this->_default_seed_addExpression;
-
-        $field = $this->factory($c, $expression);
+        $field = Field::fromSeed($this->_default_seed_addExpression, $expression);
 
         $this->addField($name, $field);
 
