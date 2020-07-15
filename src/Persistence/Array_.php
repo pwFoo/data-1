@@ -151,7 +151,7 @@ class Array_ extends Persistence
     public function insert(Model $m, $data, string $table = null)
     {
         if ($table !== null) {
-            throw new \Error('debug!!');
+                throw new \Error('debug xxx!! ' . $table . ' vs. ' . $m->table);
         }
 
         $data = $this->typecastSaveRow($m, $data);
@@ -176,7 +176,7 @@ class Array_ extends Persistence
     public function update(Model $m, $id, $data, string $table = null)
     {
         if ($table !== null) {
-            throw new \Error('debug!!');
+                throw new \Error('debug xxx!! ' . $table . ' vs. ' . $m->table);
         }
 
         $data = $this->typecastSaveRow($m, $data);
@@ -198,7 +198,7 @@ class Array_ extends Persistence
     public function delete(Model $m, $id, string $table = null)
     {
         if ($table !== null) {
-            throw new \Error('debug!!');
+                throw new \Error('debug xxx!! ' . $table . ' vs. ' . $m->table);
         }
 
         unset($this->data[$m->table][$id]);
