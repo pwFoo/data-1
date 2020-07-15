@@ -82,6 +82,10 @@ class Array_ extends Persistence
      */
     public function load(Model $m, $id, string $table = null): array
     {
+        if ($table !== null) {
+            throw new \Error('debug!!');
+        }
+
         if (isset($m->table) && !isset($this->data[$m->table])) {
             throw (new Exception('Table was not found in the array data source'))
                 ->addMoreInfo('table', $m->table);
@@ -103,6 +107,10 @@ class Array_ extends Persistence
      */
     public function tryLoad(Model $m, $id, string $table = null): ?array
     {
+        if ($table !== null) {
+            throw new \Error('debug!!');
+        }
+
         if ($table === null) {
             $table = $m->table;
         }
@@ -122,6 +130,10 @@ class Array_ extends Persistence
      */
     public function tryLoadAny(Model $m, string $table = null): ?array
     {
+        if ($table !== null) {
+            throw new \Error('debug!!');
+        }
+
         if ($table === null) {
             $table = $m->table;
         }
@@ -148,6 +160,10 @@ class Array_ extends Persistence
      */
     public function insert(Model $m, $data, string $table = null)
     {
+        if ($table !== null) {
+            throw new \Error('debug!!');
+        }
+
         if ($table === null) {
             $table = $m->table;
         }
@@ -173,6 +189,10 @@ class Array_ extends Persistence
      */
     public function update(Model $m, $id, $data, string $table = null)
     {
+        if ($table !== null) {
+            throw new \Error('debug!!');
+        }
+
         if ($table === null) {
             $table = $m->table;
         }
@@ -195,6 +215,10 @@ class Array_ extends Persistence
      */
     public function delete(Model $m, $id, string $table = null)
     {
+        if ($table !== null) {
+            throw new \Error('debug!!');
+        }
+
         if ($table === null) {
             $table = $m->table;
         }
@@ -211,6 +235,10 @@ class Array_ extends Persistence
      */
     public function generateNewId($m, string $table = null)
     {
+        if ($table !== null) {
+            throw new \Error('debug!!');
+        }
+
         if ($table === null) {
             $table = $m->table;
         }
