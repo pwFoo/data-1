@@ -86,17 +86,17 @@ class Array_ extends Persistence
             throw new \Error('debug!!');
         }
 
-        if (isset($m->table) && !isset($this->data[$m->table])) {
+        if (!isset($this->data[$m->table])) {
             throw (new Exception('Table was not found in the array data source'))
                 ->addMoreInfo('table', $m->table);
         }
 
-        if (!isset($this->data[$table ?? $m->table][$id])) {
+        if (!isset($this->data[$m->table][$id])) {
             throw (new Exception('Record with specified ID was not found', 404))
                 ->addMoreInfo('id', $id);
         }
 
-        return $this->tryLoad($m, $id, $table);
+        return $this->tryLoad($m, $id);
     }
 
     /**
@@ -111,22 +111,16 @@ class Array_ extends Persistence
             throw new \Error('debug!!');
         }
 
-        if ($table === null) {
-            $table = $m->table;
-        }
-
-        if (!isset($this->data[$table][$id])) {
+        if (!isset($this->data[$m->table][$id])) {
             return null;
         }
 
-        return $this->typecastLoadRow($m, $this->data[$table][$id]);
+        return $this->typecastLoadRow($m, $this->data[$m->table][$id]);
     }
 
     /**
      * Tries to load first available record and return data record.
      * Doesn't throw exception if model can't be loaded or there are no data records.
-     *
-     * @param mixed $table
      */
     public function tryLoadAny(Model $m, string $table = null): ?array
     {
@@ -134,18 +128,14 @@ class Array_ extends Persistence
             throw new \Error('debug!!');
         }
 
-        if ($table === null) {
-            $table = $m->table;
-        }
-
-        if (!$this->data[$table]) {
+        if (!$this->data[$m->table]) {
             return null;
         }
 
-        reset($this->data[$table]);
-        $key = key($this->data[$table]);
+        reset($this->data[$m->table]);
+        $key = key($this->data[$m->table]);
 
-        $row = $this->load($m, $key, $table);
+        $row = $this->load($m, $key);
         $m->id = $key;
 
         return $row;
@@ -164,17 +154,13 @@ class Array_ extends Persistence
             throw new \Error('debug!!');
         }
 
-        if ($table === null) {
-            $table = $m->table;
-        }
-
         $data = $this->typecastSaveRow($m, $data);
 
-        $id = $this->generateNewId($m, $table);
+        $id = $this->generateNewId($m);
         if ($m->id_field) {
             $data[$m->id_field] = $id;
         }
-        $this->data[$table][$id] = $data;
+        $this->data[$m->table][$id] = $data;
 
         return $id;
     }
@@ -193,15 +179,11 @@ class Array_ extends Persistence
             throw new \Error('debug!!');
         }
 
-        if ($table === null) {
-            $table = $m->table;
-        }
-
         $data = $this->typecastSaveRow($m, $data);
 
-        $this->data[$table][$id] =
+        $this->data[$m->table][$id] =
             array_merge(
-                $this->data[$table][$id] ?? [],
+                $this->data[$m->table][$id] ?? [],
                 $data
             );
 
@@ -219,35 +201,21 @@ class Array_ extends Persistence
             throw new \Error('debug!!');
         }
 
-        if ($table === null) {
-            $table = $m->table;
-        }
-
-        unset($this->data[$table][$id]);
+        unset($this->data[$m->table][$id]);
     }
 
     /**
      * Generates new record ID.
      *
-     * @param Model $m
-     *
      * @return string
      */
-    public function generateNewId($m, string $table = null)
+    public function generateNewId(Model $m)
     {
-        if ($table !== null) {
-            throw new \Error('debug!!');
-        }
-
-        if ($table === null) {
-            $table = $m->table;
-        }
-
         if ($m->id_field) {
-            $ids = array_keys($this->data[$table]);
+            $ids = array_keys($this->data[$m->table]);
             $type = $m->getField($m->id_field)->type;
         } else {
-            $ids = [count($this->data[$table])]; // use ids starting from 1
+            $ids = [count($this->data[$m->table])]; // use ids starting from 1
             $type = 'integer';
         }
 
